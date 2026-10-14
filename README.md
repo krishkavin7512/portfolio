@@ -2,7 +2,7 @@
 
 Personal site of **Kavin Krish Vijay**: machine learning & full-stack engineer, B.Tech CSE at SRM IST (2024–2028), Chennai.
 
-**Live:** https://kavin-dev-portfolio.vercel.app
+**Live:** https://portfolio-eta-inky-14.vercel.app
 
 ## What's inside
 

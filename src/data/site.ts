@@ -13,9 +13,12 @@ export const site = {
   country: "India",
   status: "Open to internships · 2027",
   email: "krishkavin7512@gmail.com",
-  url: "https://kavin-dev-portfolio.vercel.app",
+  // Vercel exposes the project's production domain at build time; fall back to the current one
+  url: process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "https://portfolio-eta-inky-14.vercel.app",
   description:
-    "Kavin Krish is a machine learning and full-stack engineer studying Computer Science at SRM IST, Chennai. He builds intelligent software end to end, from the model to the interface.",
+    "Kavin Krish is a machine learning and full-stack engineer studying Computer Science at SRM IST, Chennai, building intelligent software end to end, from the model to the interface.",
   statement:
     "I build intelligent software end to end, from the model that makes the call to the interface that explains it.",
   about: [
