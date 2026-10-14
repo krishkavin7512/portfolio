@@ -1,0 +1,108 @@
+import {
+  siDart,
+  siDocker,
+  siExpress,
+  siFastapi,
+  siFirebase,
+  siFlask,
+  siFlutter,
+  siFramer,
+  siGithubactions,
+  siGsap,
+  siJavascript,
+  siMapbox,
+  siMediapipe,
+  siMongodb,
+  siNextdotjs,
+  siNodedotjs,
+  siNumpy,
+  siOpencv,
+  siPandas,
+  siPostgresql,
+  siPython,
+  siReact,
+  siRedis,
+  siScikitlearn,
+  siCelery,
+  siSqlite,
+  siSupabase,
+  siTailwindcss,
+  siTensorflow,
+  siTypescript,
+  siVercel,
+  siVite,
+  siKeras,
+} from "simple-icons";
+
+export type Tool = { name: string; path?: string };
+
+const t = (name: string, icon?: { path: string }): Tool => ({ name, path: icon?.path });
+
+export const stack: { key: string; title: string; blurb: string; tools: Tool[] }[] = [
+  {
+    key: "ml",
+    title: "Machine Learning",
+    blurb: "Sequence models, classical ML written from first principles, and computer vision that runs in real time.",
+    tools: [
+      t("TensorFlow", siTensorflow),
+      t("Keras", siKeras),
+      t("scikit-learn", siScikitlearn),
+      t("XGBoost"),
+      t("MediaPipe", siMediapipe),
+      t("OpenCV", siOpencv),
+      t("NumPy", siNumpy),
+      t("pandas", siPandas),
+    ],
+  },
+  {
+    key: "backend",
+    title: "Backend",
+    blurb: "APIs that serve models live over REST and WebSockets, with queues for the slow work.",
+    tools: [
+      t("Python", siPython),
+      t("FastAPI", siFastapi),
+      t("Flask", siFlask),
+      t("Node.js", siNodedotjs),
+      t("Express", siExpress),
+      t("Celery", siCelery),
+      t("Redis", siRedis),
+    ],
+  },
+  {
+    key: "frontend",
+    title: "Frontend",
+    blurb: "Interfaces that explain what the model is doing, with motion where it helps.",
+    tools: [
+      t("TypeScript", siTypescript),
+      t("JavaScript", siJavascript),
+      t("React", siReact),
+      t("Next.js", siNextdotjs),
+      t("Vite", siVite),
+      t("Tailwind CSS", siTailwindcss),
+      t("GSAP", siGsap),
+      t("Framer Motion", siFramer),
+    ],
+  },
+  {
+    key: "mobile",
+    title: "Mobile",
+    blurb: "Native Flutter apps with auth, payments, maps and background location.",
+    tools: [t("Flutter", siFlutter), t("Dart", siDart), t("Firebase", siFirebase), t("Mapbox", siMapbox)],
+  },
+  {
+    key: "infra",
+    title: "Data & Infra",
+    blurb: "Relational, geospatial and document data, containerised and shipped continuously.",
+    tools: [
+      t("Supabase", siSupabase),
+      t("PostgreSQL", siPostgresql),
+      t("MongoDB", siMongodb),
+      t("SQLite", siSqlite),
+      t("Docker", siDocker),
+      t("Vercel", siVercel),
+      t("GitHub Actions", siGithubactions),
+    ],
+  },
+];
+
+export const allTools: Tool[] = stack.flatMap((s) => s.tools);
