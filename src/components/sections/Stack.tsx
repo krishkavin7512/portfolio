@@ -2,9 +2,10 @@
 
 import { useRef, useState } from "react";
 
+import { FitWord } from "@/components/FitWord";
 import { Marquee } from "@/components/Marquee";
 import { allTools, stack, type Tool } from "@/data/stack";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 function ToolIcon({ tool, className = "h-7 w-7" }: { tool: Tool; className?: string }) {
   if (!tool.path) {
@@ -33,34 +34,52 @@ export function Stack() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        plates.forEach((p, i) => {
-          if (i > 0) gsap.set(p, { yPercent: 55, rotate: TILTS[i] + 10, scale: 0.86, autoAlpha: 0, filter: "blur(14px)" });
-          else gsap.set(p, { rotate: TILTS[0] });
+        // each plate is either gone (flung up), current, or waiting below
+        const states = (i: number, current: number) =>
+          i < current
+            ? { yPercent: -48, rotate: TILTS[i] - 14, scale: 1.12, autoAlpha: 0, filter: "blur(16px)" }
+            : i === current
+              ? { yPercent: 0, rotate: TILTS[i], scale: 1, autoAlpha: 1, filter: "blur(0px)" }
+              : { yPercent: 55, rotate: TILTS[i] + 10, scale: 0.86, autoAlpha: 0, filter: "blur(14px)" };
+
+        plates.forEach((p, i) => gsap.set(p, states(i, 0)));
+        let current = 0;
+
+        // Scroll only decides which plate is current; the swap itself always plays to the end,
+        // so stopping mid-scroll never leaves a plate half-blurred.
+        const show = (next: number) => {
+          if (next === current) return;
+          const forward = next > current;
+          current = next;
+          setActive(next);
+          plates.forEach((p, i) => {
+            gsap.to(p, {
+              ...states(i, next),
+              duration: i === next ? 0.85 : 0.6,
+              delay: i === next && forward ? 0.08 : 0,
+              ease: i === next ? "expo" : "power3.in",
+              overwrite: true,
+            });
+          });
+        };
+
+        ScrollTrigger.create({
+          trigger: "[data-stack-pin]",
+          start: "top top",
+          end: () => `+=${window.innerHeight * 0.65 * plates.length}`,
+          pin: true,
+          onUpdate: (self) => show(Math.min(plates.length - 1, Math.floor(self.progress * plates.length))),
         });
 
-        const tl = gsap.timeline({
-          defaults: { ease: "power2.inOut", duration: 1 },
-          scrollTrigger: {
-            trigger: "[data-stack-pin]",
-            start: "top top",
-            end: () => `+=${window.innerHeight * 0.8 * (plates.length - 1) + window.innerHeight * 0.4}`,
-            pin: true,
-            scrub: 0.8,
-            onUpdate: (self) => {
-              const i = Math.min(plates.length - 1, Math.round(self.progress * (plates.length - 1) * 1.08));
-              setActive((prev) => (prev === i ? prev : i));
-            },
+        gsap.fromTo(
+          "[data-stack-word]",
+          { xPercent: 1.5 },
+          {
+            xPercent: -1.5,
+            ease: "none",
+            scrollTrigger: { trigger: "[data-stack-pin]", start: "top top", end: () => `+=${window.innerHeight * 0.65 * plates.length}`, scrub: true },
           },
-        });
-
-        plates.forEach((p, i) => {
-          if (i === plates.length - 1) return;
-          const next = plates[i + 1];
-          tl.to(p, { yPercent: -45, rotate: TILTS[i] - 14, scale: 1.12, autoAlpha: 0, filter: "blur(16px)" }, i)
-            .to(next, { yPercent: 0, rotate: TILTS[i + 1], scale: 1, autoAlpha: 1, filter: "blur(0px)" }, i + 0.08);
-        });
-        tl.to({}, { duration: 0.35 });
-        tl.to("[data-stack-word]", { xPercent: -14, ease: "none", duration: tl.duration() }, 0);
+        );
       });
 
       gsap.from("[data-stack-head] > *", {
@@ -79,9 +98,9 @@ export function Stack() {
   return (
     <section ref={root} id="stack" data-theme="dark" className="relative bg-night text-cream">
       <div data-stack-pin className="relative flex min-h-[100svh] flex-col overflow-hidden motion-safe:h-[100svh]">
-        <div className="pointer-events-none absolute inset-x-0 top-[18svh] select-none overflow-hidden" aria-hidden>
-          <div data-stack-word className="display dot-type dot-type--blue whitespace-nowrap text-center text-[clamp(140px,26vw,460px)] leading-[0.8] [font-variation-settings:'wdth'_125]">
-            Stack Stack
+        <div className="pointer-events-none absolute inset-x-[var(--gutter)] top-[20svh] select-none" aria-hidden>
+          <div data-stack-word>
+            <FitWord text="Stack" fill={0.96} className="display dot-type dot-type--blue leading-[0.8] [font-variation-settings:'wdth'_125]" />
           </div>
         </div>
 

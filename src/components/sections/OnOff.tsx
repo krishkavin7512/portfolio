@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { useRef } from "react";
 
-import hackathon from "@/assets/img/hackathon.jpg";
-import macaw from "@/assets/img/lens-macaw-2.jpg";
+import camera from "@/assets/img/camera.jpg";
+import hall from "@/assets/img/hackathon-hall.jpg";
 import { Magnetic } from "@/components/Magnetic";
 import { TransitionLink } from "@/components/providers/PageTransition";
 import { TopoCanvas } from "@/components/TopoCanvas";
@@ -21,6 +21,8 @@ function Arrow({ className }: { className?: string }) {
 const BLOCKS = [
   {
     key: "on",
+    img: hall,
+    imgAlt: "Kavin coding in a packed hackathon auditorium",
     lead: "On",
     word: "build",
     href: "/#work",
@@ -29,6 +31,8 @@ const BLOCKS = [
   },
   {
     key: "off",
+    img: camera,
+    imgAlt: "Kavin checking a shot on a mirrorless camera with a telephoto lens",
     lead: "Off",
     word: "play",
     href: "/#off-screen",
@@ -75,20 +79,23 @@ export function OnOff() {
         <TopoCanvas className="h-full w-full" color={[0.055, 0.055, 0.07, 0.16]} density={6} seed={7.3} />
       </div>
 
-      <div data-side="left" className="pointer-events-none absolute -left-[4vw] top-[14%] hidden w-[24vw] md:block">
+      <div data-side="left" className="pointer-events-none absolute -left-[5vw] top-[18%] hidden w-[27vw] md:block">
         <div className="overflow-hidden rounded-[10px] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)]">
-          <Image src={hackathon} alt="" placeholder="blur" sizes="24vw" quality={80} className="h-auto w-full" />
+          <Image src={hall} alt="Kavin coding in a packed hackathon auditorium" placeholder="blur" sizes="27vw" quality={80} className="h-auto w-full" />
         </div>
       </div>
-      <div data-side="right" className="pointer-events-none absolute -right-[4vw] top-[24%] hidden w-[22vw] md:block">
+      <div data-side="right" className="pointer-events-none absolute -right-[3vw] top-[16%] hidden w-[21vw] md:block">
         <div className="overflow-hidden rounded-[10px] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)]">
-          <Image src={macaw} alt="" placeholder="blur" sizes="22vw" quality={80} className="h-auto w-full" />
+          <Image src={camera} alt="Kavin checking a shot on a mirrorless camera with a telephoto lens" placeholder="blur" sizes="21vw" quality={85} className="h-auto w-full" />
         </div>
       </div>
 
       <div className="relative z-10 mx-auto flex max-w-[1100px] flex-col items-center gap-24 px-[var(--gutter)] md:h-[100svh] md:flex-row md:justify-center md:gap-[5vw]">
         {BLOCKS.map((b) => (
           <div key={b.key} data-block className={`flex flex-col items-center text-center ${b.align}`}>
+            <div data-fade className="mb-8 w-[62vw] max-w-[320px] overflow-hidden rounded-[12px] shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)] md:hidden">
+              <Image src={b.img} alt={b.imgAlt} placeholder="blur" sizes="62vw" quality={80} className="h-auto w-full" />
+            </div>
             <h2 className="relative">
               <span className="block overflow-hidden">
                 <span data-rise className="serif-i block text-[clamp(52px,6.2vw,104px)] leading-[0.9]">

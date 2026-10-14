@@ -335,7 +335,7 @@ export type Archived = {
   summary: string;
   tags: string[];
   href?: string;
-  preview: "ticket" | "wafer" | "goa" | "snake" | "tetris";
+  preview: "ticket" | "wafer" | "goa";
   note?: string;
 };
 
@@ -363,22 +363,6 @@ export const archive: Archived[] = [
     tags: ["React", "Supabase", "PWA"],
     preview: "goa",
     note: "Private",
-  },
-  {
-    name: "Tetris",
-    year: "2026",
-    summary: "All seven tetrominoes, ghost piece, hold, next queue and level progression.",
-    tags: ["Python", "Pygame"],
-    href: "https://github.com/krishkavin7512/Tetris",
-    preview: "tetris",
-  },
-  {
-    name: "Snake",
-    year: "2026",
-    summary: "The classic, rebuilt in Python and Pygame.",
-    tags: ["Python", "Pygame"],
-    href: "https://github.com/krishkavin7512/Snake-Game",
-    preview: "snake",
   },
 ];
 

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 
 import { MONOGRAM_PATHS } from "@/components/Monogram";
+import { drawSignature, SIGNATURE_VIEWBOX, SignaturePaths } from "@/components/Signature";
 import { appState } from "@/lib/app-state";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { getLenis } from "./providers/SmoothScroll";
@@ -16,10 +17,14 @@ function waitForAssets(): Promise<void> {
   );
   const all = Promise.all([fonts, ...imgs]).then(() => undefined);
   // never hold the visitor hostage to a slow image
-  const timeout = new Promise<void>((resolve) => setTimeout(resolve, 2600));
+  const timeout = new Promise<void>((resolve) => setTimeout(resolve, 2400));
   return Promise.race([all, timeout]);
 }
 
+/**
+ * Monogram + counter → the signature writes itself in the middle of the screen →
+ * it rushes toward the camera and out of frame as the curtain lifts on the site.
+ */
 export function Preloader() {
   const root = useRef<HTMLDivElement>(null);
   const path = useRef<SVGPathElement>(null);
@@ -28,8 +33,7 @@ export function Preloader() {
   useGSAP(
     () => {
       const el = root.current!;
-      const lenis = getLenis();
-      lenis?.stop();
+      getLenis()?.stop();
       document.documentElement.classList.add("is-loading");
 
       const finish = () => {
@@ -44,56 +48,64 @@ export function Preloader() {
       }
 
       const strokes = gsap.utils.toArray<SVGPathElement>("[data-mono] path", el);
+      const sigPaths = gsap.utils.toArray<SVGPathElement>("[data-sig] path", el);
       const progress = { v: 0 };
       let ready = false;
       waitForAssets().then(() => (ready = true));
 
       gsap.set(strokes, { drawSVG: "0%" });
+      gsap.set(sigPaths, { drawSVG: "0%" });
       gsap.set("[data-line]", { scaleX: 0 });
 
       const intro = gsap.timeline();
       intro
         .from("[data-fade]", { autoAlpha: 0, y: 12, stagger: 0.08, duration: 0.8 })
-        .to(strokes, { drawSVG: "100%", duration: 0.7, stagger: 0.14, ease: "power2.inOut" }, 0.1);
+        .to(strokes, { drawSVG: "100%", duration: 0.6, stagger: 0.12, ease: "power2.inOut" }, 0.1);
 
       // count to 90 on a clock, the last stretch waits for real assets
       const counter = gsap.to(progress, {
         v: 90,
-        duration: 1.6,
+        duration: 1.3,
         ease: "power2.inOut",
         onUpdate: render,
         onComplete: () => {
           const finishCount = () =>
-            gsap.to(progress, { v: 100, duration: 0.45, ease: "power2.out", onUpdate: render, onComplete: exit });
+            gsap.to(progress, { v: 100, duration: 0.35, ease: "power2.out", onUpdate: render, onComplete: signOff });
           if (ready) finishCount();
           else waitForAssets().then(finishCount);
         },
       });
 
       function render() {
-        const v = Math.round(progress.v);
-        if (count.current) count.current.textContent = String(v).padStart(3, "0");
+        if (count.current) count.current.textContent = String(Math.round(progress.v)).padStart(3, "0");
         gsap.set("[data-line]", { scaleX: progress.v / 100 });
       }
 
-      function exit() {
+      function signOff() {
         const state = { edge: 100, bulge: 100 };
         gsap
           .timeline()
-          .to(strokes, { stroke: "var(--blue-soft)", duration: 0.3, stagger: 0.03 })
-          .to("[data-fade], [data-mono]", { autoAlpha: 0, y: -20, duration: 0.5, stagger: 0.04, ease: "power2.in" }, "+=0.15")
-          .add(finish, "-=0.1")
+          // clear the stage
+          .to("[data-mono], [data-fade]", { autoAlpha: 0, y: -16, duration: 0.45, stagger: 0.03, ease: "power2.in" })
+          .set("[data-sig]", { autoAlpha: 1 })
+          // sign
+          .add(drawSignature(sigPaths, 1.5), "-=0.05")
+          .to({}, { duration: 0.25 })
+          // and fling it past the camera
+          .to("[data-sig]", { scale: 9, rotate: -8, duration: 1.05, ease: "power3.in" })
+          .to("[data-sig]", { autoAlpha: 0, filter: "blur(6px)", duration: 0.35, ease: "power1.in" }, "-=0.35")
+          .add(finish, "-=0.35")
           .to(
             state,
             {
               edge: 0,
               bulge: 0,
-              duration: 1.15,
+              duration: 1.1,
               ease: "inOut",
               onUpdate: () =>
                 path.current?.setAttribute("d", curve(state.edge, state.bulge + 22 * Math.sin(Math.PI * (state.edge / 100)))),
             },
-            "-=0.35",
+            "-=0.45",
           )
           .set(el, { display: "none" });
       }
@@ -107,7 +119,7 @@ export function Preloader() {
   );
 
   return (
-    <div ref={root} className="fixed inset-0 z-[100] text-cream" aria-hidden>
+    <div ref={root} className="fixed inset-0 z-[100] overflow-hidden text-cream" aria-hidden>
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <path ref={path} d={curve(100, 100)} fill="var(--night)" />
       </svg>
@@ -134,6 +146,24 @@ export function Preloader() {
           </span>
         </div>
       </div>
+
+      {/* the signature that signs off the loader */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <svg
+          data-sig
+          viewBox={SIGNATURE_VIEWBOX}
+          className="invisible w-[min(78vw,640px)] text-cream will-change-transform"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={4}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ transformOrigin: "52% 58%" }}
+        >
+          <SignaturePaths />
+        </svg>
+      </div>
+
       <div className="absolute inset-x-0 bottom-0 flex justify-between p-[var(--gutter)]">
         <span data-fade className="label text-cream/55">
           Kavin Krish — Portfolio

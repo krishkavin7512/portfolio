@@ -23,7 +23,7 @@ export const site = {
     "I build intelligent software end to end, from the model that makes the call to the interface that explains it.",
   about: [
     "I'm a Computer Science undergraduate at SRM Institute of Science and Technology, working across machine learning and full-stack development.",
-    "I like problems where a model has to earn its place in a real product: sign language that has to be read in real time, a risk score a health worker can act on, insurance that pays out without a single form.",
+    "These days I'm focused on building AI solutions that hold up outside a notebook: models that are trained and evaluated properly, served through fast APIs, and wrapped in interfaces people actually enjoy using.",
   ],
   // résumé PDF not supplied yet; set to "/resume.pdf" once it is in /public
   resume: null as string | null,

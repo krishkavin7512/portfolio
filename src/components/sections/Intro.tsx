@@ -6,6 +6,7 @@ import { useRef } from "react";
 import boat from "@/assets/img/boat-selfie.jpg";
 import childhood from "@/assets/img/childhood.jpg";
 import friends from "@/assets/img/friends.jpg";
+import hackathon from "@/assets/img/hackathon.jpg";
 import mirror from "@/assets/img/mirror.jpg";
 import night from "@/assets/img/night-profile.jpg";
 import { site } from "@/data/site";
@@ -25,7 +26,8 @@ const SHOTS: Shot[] = [
   { src: night, alt: "Kavin at night, looking up and away from the camera", speed: 0.75, rotate: 2, className: "right-[4vw] top-[14%] w-[40vw] md:right-[5vw] md:w-[23vw]" },
   { src: friends, alt: "Kavin with six friends in suits, all striking a pose", speed: 1.15, rotate: -1.5, className: "left-[3vw] top-[44%] w-[44vw] md:left-[4vw] md:w-[24vw]" },
   { src: boat, alt: "Night selfie on a boat deck, in sunglasses", speed: 1.4, rotate: 2.5, className: "right-[3vw] top-[56%] w-[40vw] md:right-[3vw] md:w-[21vw]" },
-  { src: mirror, alt: "Mirror selfie in a brown shirt and sunglasses", speed: 0.85, rotate: -2, className: "left-[30vw] top-[80%] w-[30vw] md:left-[8vw] md:top-[78%] md:w-[13vw]" },
+  { src: mirror, alt: "Mirror selfie in a brown shirt and sunglasses", speed: 0.85, rotate: -2, className: "left-[5vw] top-[80%] w-[30vw] md:left-[8vw] md:top-[78%] md:w-[13vw]" },
+  { src: hackathon, alt: "Kavin deep in code at a hackathon, mechanical keyboard plugged in", speed: 1.2, rotate: 3, className: "right-[5vw] top-[84%] w-[32vw] md:right-[9vw] md:top-[80%] md:w-[14vw]" },
 ];
 
 const STATEMENT: { text: string; em?: boolean }[] = [

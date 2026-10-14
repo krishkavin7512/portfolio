@@ -238,7 +238,7 @@ export function Emblem({ kind }: { kind: EmblemKind }) {
 
 /* ───────────── previews for the "more work" list ───────────── */
 
-export function Preview({ kind }: { kind: "ticket" | "wafer" | "goa" | "snake" | "tetris" }) {
+export function Preview({ kind }: { kind: "ticket" | "wafer" | "goa" }) {
   if (kind === "ticket") {
     return (
       <svg viewBox="0 0 240 160" className="h-full w-full">
@@ -283,45 +283,5 @@ export function Preview({ kind }: { kind: "ticket" | "wafer" | "goa" | "snake" |
       </svg>
     );
   }
-  if (kind === "snake") {
-    const body: [number, number][] = [[3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [7, 4], [7, 3], [8, 3], [9, 3], [10, 3]];
-    return (
-      <svg viewBox="0 0 240 160" className="h-full w-full">
-        <rect width="240" height="160" fill="#0e1017" />
-        <g stroke={CREAM} strokeOpacity="0.06">
-          {Array.from({ length: 16 }).map((_, i) => (
-            <line key={i} x1={i * 16} x2={i * 16} y1="0" y2="160" />
-          ))}
-          {Array.from({ length: 10 }).map((_, i) => (
-            <line key={i} y1={i * 16} y2={i * 16} x1="0" x2="240" />
-          ))}
-        </g>
-        {body.map(([x, y], i) => (
-          <rect key={i} x={x * 16 + 1} y={y * 16 + 1} width="14" height="14" rx="3" fill={i === body.length - 1 ? CREAM : BLUE} fillOpacity={0.45 + (i / body.length) * 0.55} />
-        ))}
-        <rect x={12 * 16 + 3} y={3 * 16 + 3} width="10" height="10" rx="5" fill="#ff5a5f" className="emb-pulse" />
-      </svg>
-    );
-  }
-  const blocks: [number, number, string][] = [
-    [0, 8, BLUE], [1, 8, BLUE], [2, 8, BLUE], [3, 8, BLUE], [4, 8, CREAM], [5, 8, CREAM], [6, 8, BLUE_DEEP], [7, 8, BLUE_DEEP], [9, 8, CREAM],
-    [0, 7, CREAM], [1, 7, BLUE_DEEP], [5, 7, CREAM], [6, 7, BLUE_DEEP], [7, 7, BLUE_DEEP], [8, 7, BLUE], [9, 7, BLUE],
-    [0, 6, CREAM], [8, 6, BLUE], [9, 6, BLUE],
-  ];
-  return (
-    <svg viewBox="0 0 240 160" className="h-full w-full">
-      <rect width="240" height="160" fill="#0e1017" />
-      <g transform="translate(70 4)">
-        <rect width="100" height="152" fill="none" stroke={CREAM} strokeOpacity="0.2" />
-        {blocks.map(([x, y, c], i) => (
-          <rect key={i} x={x * 10 + 0.5} y={y * 16 + 8.5} width="9" height="15" fill={c} />
-        ))}
-        <g className="emb-fall">
-          {[[3, 0], [4, 0], [5, 0], [4, 1]].map(([x, y]) => (
-            <rect key={`${x}${y}`} x={x * 10 + 0.5} y={y * 16 + 8.5} width="9" height="15" fill={BLUE} />
-          ))}
-        </g>
-      </g>
-    </svg>
-  );
+  return null;
 }

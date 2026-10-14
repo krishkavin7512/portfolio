@@ -36,7 +36,7 @@ const HOBBIES: { n: string; title: string; meta: string; body: string; visual: R
     n: "02",
     title: "Keys",
     meta: "Piano",
-    body: "I play the piano. The keys are running the opening of Für Elise; hover to play your own.",
+    body: "I play the piano. Click a key to turn the sound on, then hover or use your keyboard (A to ;) to play along.",
     visual: <PianoKeys />,
   },
   {

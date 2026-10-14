@@ -6,11 +6,12 @@ Personal site of **Kavin Krish Vijay**: machine learning & full-stack engineer, 
 
 ## What's inside
 
+- **Loader**: KK monogram and counter, then the signature writes itself and flies past the camera as the curtain lifts.
 - **Hero**: cut-out portrait over a live WebGL contour map that bends toward the cursor, a giant variable-width name, and a hand-traced signature that draws itself stroke by stroke.
 - **Intro**: a statement that fills in word by word while photos drift past at different scroll speeds.
 - **Selected work**: a pinned section where foil "trading cards" slide sideways, tilt in 3D and catch a holographic sheen. Each card has its own animated emblem.
 - **Stack**: polaroid plates that swap with a motion blur as you scroll, plus a logo marquee that speeds up and reverses with the scroll.
-- **Off screen**: a playable aim trainer (Valorant), piano keys running Für Elise, and a camera aperture that stops down as you move. Then a draggable fan of photos shot on a Sony α6100.
+- **Off screen**: a playable aim trainer (Valorant), a playable piano with a synthesised tone (mouse or keys A to ;), and a camera aperture that stops down as you move. Then a draggable fan of photos shot on a Sony α6100.
 - **Timeline**: a sticky year counter with rolling digits.
 - **Case studies** for six projects at `/work/[slug]`, with curtain page transitions.
 

@@ -113,13 +113,6 @@ a {
   text-decoration: none;
 }
 
-/* the custom cursor replaces the system one on fine pointers */
-@media (hover: hover) and (pointer: fine) {
-  html.has-cursor,
-  html.has-cursor * {
-    cursor: none !important;
-  }
-}
 
 /* ───────────────────────── type helpers ───────────────────────── */
 
@@ -337,8 +330,6 @@ html[data-theme="dark"] .grain {
 .emb-scan-x { animation: emb-scan-x 1.8s var(--ease-in-out) infinite alternate; }
 @keyframes emb-scan-x { from { transform: translateY(0); } to { transform: translateY(30px); } }
 
-.emb-fall { animation: emb-fall 3s steps(6) infinite; }
-@keyframes emb-fall { from { transform: translateY(0); } to { transform: translateY(96px); } }
 
 @media (prefers-reduced-motion: reduce) {
   [class*="emb-"] { animation: none !important; }

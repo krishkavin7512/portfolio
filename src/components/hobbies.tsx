@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent as RPointerEvent } from "react";
 
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
+import { audioReady, play, unlock } from "@/lib/piano";
 
 /* ───────────────────────── aim trainer (Valorant) ───────────────────────── */
 
@@ -68,7 +69,7 @@ export function AimTrainer() {
       ref={box}
       data-cursor="hide"
       onPointerDown={() => !armed && start()}
-      className="relative h-full w-full touch-manipulation select-none overflow-hidden bg-[#0f1923]"
+      className="relative h-full w-full cursor-none touch-manipulation select-none overflow-hidden bg-[#0f1923] [&_*]:cursor-none"
       style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
     >
       {!armed && (
@@ -116,6 +117,7 @@ export function PianoKeys() {
   const root = useRef<HTMLDivElement>(null);
   const [lit, setLit] = useState<string | null>(null);
   const [label, setLabel] = useState("Hover the keys");
+  const [sound, setSound] = useState(false);
   const hovering = useRef(false);
 
   const keys: { note: string; black: boolean; left: number }[] = [];
@@ -129,12 +131,39 @@ export function PianoKeys() {
   }
   const whiteCount = w;
 
-  const press = (note: string) => {
+  const press = (note: string, audible = false) => {
     setLit(note);
     setLabel(note.replace("#", "♯"));
+    if (audible) play(note);
     const el = root.current?.querySelector<HTMLElement>(`[data-note="${note}"] [data-bar]`);
     if (el) gsap.fromTo(el, { scaleY: 1, opacity: 1 }, { scaleY: 0, opacity: 0.2, duration: 1.4, ease: "power2.out" });
   };
+
+  // a click (or key press) is what browsers require before any audio can start
+  const strike = async (note: string) => {
+    const ok = audioReady() || (await unlock());
+    setSound(ok);
+    press(note, ok);
+  };
+
+  // computer keyboard: A W S E D F T G Y H U J K O L P ; while the piano is hovered
+  useEffect(() => {
+    const map: Record<string, string> = {
+      a: "C4", w: "C#4", s: "D4", e: "D#4", d: "E4", f: "F4", t: "F#4", g: "G4", y: "G#4", h: "A4", u: "A#4", j: "B4",
+      k: "C5", o: "C#5", l: "D5", p: "D#5", ";": "E5",
+    };
+    const down = (e: KeyboardEvent) => {
+      if (!hovering.current || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+      const note = map[e.key.toLowerCase()];
+      if (!note) return;
+      e.preventDefault();
+      void strike(note);
+    };
+    window.addEventListener("keydown", down);
+    return () => window.removeEventListener("keydown", down);
+    // strike only reads refs and stable setters
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // play the motif visually while nobody is touching the keys
   useEffect(() => {
@@ -169,6 +198,13 @@ export function PianoKeys() {
       }}
     >
       <span className="absolute left-4 top-4 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/60">{label}</span>
+      <span className="absolute right-4 top-4 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/60">
+        <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
+          <path d="M2 6h3l4-3v10l-4-3H2z" />
+          {sound ? <path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.6a6 6 0 0 1 0 8.8" /> : <path d="M11 6l4 4M15 6l-4 4" />}
+        </svg>
+        {sound ? "Sound on" : "Click a key for sound"}
+      </span>
       <div className="relative h-[62%] w-full" role="group" aria-label="Piano keys">
         {keys.map((k) => {
           const on = lit === k.note;
@@ -177,7 +213,17 @@ export function PianoKeys() {
             <div
               key={k.note}
               data-note={k.note}
-              onPointerEnter={() => press(k.note)}
+              role="button"
+              aria-label={`Play ${k.note.replace("#", " sharp ")}`}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                void strike(k.note);
+              }}
+              onPointerEnter={() => {
+                const ok = audioReady();
+                if (ok) setSound(true);
+                press(k.note, ok);
+              }}
               className={`absolute top-0 rounded-b-[5px] transition-[transform,background-color] duration-150 ${
                 k.black
                   ? `z-10 h-[60%] ${on ? "translate-y-[2px] bg-blue" : "bg-[#0b0b0d]"} shadow-[0_4px_8px_rgba(0,0,0,0.5)]`

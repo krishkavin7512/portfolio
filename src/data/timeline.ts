@@ -50,12 +50,6 @@ export const timeline: { year: string; entries: TimelineEntry[] }[] = [
         href: "/work/isl-recognition",
       },
       {
-        when: "Apr",
-        title: "Tetris & Snake",
-        body: "Two classics rebuilt in Python and Pygame.",
-        href: "https://github.com/krishkavin7512/Tetris",
-      },
-      {
         when: "Jun",
         title: "WSF",
         body: "Location tracking and data layer for an AI women's safety system.",

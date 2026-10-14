@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 
+import { FitWord } from "@/components/FitWord";
 import { ProjectCard } from "@/components/ProjectCard";
 import { projects } from "@/data/projects";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
@@ -40,7 +41,7 @@ export function Work() {
         gsap
           .timeline({ defaults: { ease: "none" }, scrollTrigger: { ...range, scrub: 1 } })
           .to("[data-ruler]", { x: () => -distance() * 0.55 }, 0)
-          .to("[data-bigword]", { xPercent: -22 }, 0)
+          .fromTo("[data-bigword]", { xPercent: 1.5 }, { xPercent: -1.5 }, 0)
           .to("[data-progress]", { scaleX: 1 }, 0);
 
         // cards settle from a tilt as they travel in from the right
@@ -75,9 +76,9 @@ export function Work() {
     <section ref={root} id="work" data-theme="dark" className="relative z-10 -mt-[22svh] bg-night text-cream">
       <div data-pin className="relative flex min-h-[100svh] flex-col overflow-hidden motion-safe:h-[100svh]">
         {/* giant textured word */}
-        <div className="pointer-events-none absolute inset-x-0 top-[calc(var(--header-h)+2vh)] select-none overflow-hidden" aria-hidden>
-          <div data-bigword className="display narrow dot-type dot-type--blue whitespace-nowrap pl-[var(--gutter)] text-[clamp(110px,17vw,300px)] leading-[0.8]">
-            Selected Work · Selected Work
+        <div className="pointer-events-none absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+3vh)] select-none" aria-hidden>
+          <div data-bigword>
+            <FitWord text="Selected Work" fill={0.96} className="display narrow dot-type dot-type--blue leading-[0.8]" />
           </div>
         </div>
 
